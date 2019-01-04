@@ -1,4 +1,4 @@
-package com.highflyer.expenses.com.highflyer.expenses.model;
+package com.highflyer.expenses.model;
 
 /**
  * Created by Vlad

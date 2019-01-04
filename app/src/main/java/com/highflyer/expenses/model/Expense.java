@@ -27,7 +27,7 @@ public class Expense implements Parcelable {
         category = builder.category;
     }
 
-    public class ExpenseBuilder{
+    public static class ExpenseBuilder{
 
         private float value;
         private int date;

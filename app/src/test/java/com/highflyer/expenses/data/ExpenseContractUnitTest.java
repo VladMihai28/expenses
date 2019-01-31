@@ -36,18 +36,5 @@ public class ExpenseContractUnitTest {
         assertTrue(Modifier.isStatic(entryClass.getModifiers()));
     }
 
-    @Test
-    public void inner_class_members_correct(){
-        Class[] innerClasses = ExpenseContract.class.getDeclaredClasses();
-        Class entryClass = innerClasses[0];
-        Field[] allFields = entryClass.getDeclaredFields();
-        assertEquals(5, allFields.length);
-        for (Field field : allFields) {
-            assertTrue(field.getType() == String.class);
-            assertTrue(Modifier.isFinal(field.getModifiers()));
-            assertTrue(Modifier.isStatic(field.getModifiers()));
-        }
-    }
-
 }
 

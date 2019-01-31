@@ -43,6 +43,14 @@ public class ExpenseUnitTest {
     }
 
     @Test
+    public void builderCurrency() {
+        Expense expense = new Expense.ExpenseBuilder()
+                .currency("RON")
+                .build();
+        assertEquals("RON", expense.getCurrency());
+    }
+
+    @Test
     public void setValue() {
         Expense expense = new Expense.ExpenseBuilder()
                 .value(15.5f)
@@ -69,4 +77,12 @@ public class ExpenseUnitTest {
         assertEquals("house", expense.getCategory());
     }
 
+    @Test
+    public void setCurrency() {
+        Expense expense = new Expense.ExpenseBuilder()
+                .currency("RON")
+                .build();
+        expense.setCurrency("EUR");
+        assertEquals("EUR", expense.getCurrency());
+    }
 }

@@ -12,19 +12,23 @@ public class Expense implements Parcelable {
     private float value;
     private int date;
     private String category;
+    private String currency;
 
+    
     public Expense(){}
 
     public Expense(Parcel parcel){
         this.value = parcel.readFloat();
         this.date = parcel.readInt();
         this.category = parcel.readString();
+        this.currency = parcel.readString();
     }
 
     public Expense(ExpenseBuilder builder){
         value = builder.value;
         date = builder.date;
         category = builder.category;
+        currency = builder.currency;
     }
 
     public static class ExpenseBuilder{
@@ -32,6 +36,7 @@ public class Expense implements Parcelable {
         private float value;
         private int date;
         private String category;
+        private String currency;
 
         public ExpenseBuilder(){}
 
@@ -45,6 +50,10 @@ public class Expense implements Parcelable {
         }
         public ExpenseBuilder category(String newCategory){
             category = newCategory;
+            return this;
+        }
+        public ExpenseBuilder currency(String newCurrency){
+            currency = newCurrency;
             return this;
         }
 
@@ -77,6 +86,14 @@ public class Expense implements Parcelable {
         return category;
     }
 
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -87,6 +104,7 @@ public class Expense implements Parcelable {
         parcel.writeFloat(value);
         parcel.writeInt(date);
         parcel.writeString(category);
+        parcel.writeString(currency);
     }
 
     public static final Parcelable.Creator<Expense> CREATOR = new Parcelable.Creator<Expense>() {

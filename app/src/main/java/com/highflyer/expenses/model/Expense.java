@@ -14,6 +14,7 @@ public class Expense implements Parcelable {
     private String category;
     private String currency;
 
+    
     public Expense(){}
 
     public Expense(Parcel parcel){

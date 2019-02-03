@@ -1,16 +1,12 @@
 language: android
 jdk: oraclejdk8
-env:
- global:
-    - ANDROID_API_LEVEL=27
-    - ANDROID_BUILD_TOOLS_VERSION=27.0.3
 android:
   components:
     - tools # to get the new `repository-11.xml`
     - tools # see https://github.com/travis-ci/travis-ci/issues/6040#issuecomment-219367943)
     - platform-tools
-    - build-tools-$ANDROID_BUILD_TOOLS_VERSION
-    - android-$ANDROID_API_LEVEL
+    - build-tools-27.0.3
+    - android-27
 before_install:
   - yes | sdkmanager "platforms;android-27"
 installation

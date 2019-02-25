@@ -31,9 +31,8 @@ before_script:
   - gcloud auth activate-service-account firebase-adminsdk-mrzqn@expenses-ab252.iam.gserviceaccount.com --key-file=expenses-ab252-firebase-adminsdk-mrzqn-5aaabfed9d.json --project=expenses-ab252
   
 script:
-   - ./gradlew clean build check
-   - ./gradlew build assembleDebugAndroidTest
-   - gcloud firebase test android run --type instrumentation --results-bucket=gs://staging.expenses-ab252.appspot.com --app app/build/outputs/apk/debug/app-debug.apk --test app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk --device model=sailfish,version=28,locale=en,orientation=portrait --environment-variables coverage=true,coverageFile="/sdcard/coverage.ec" --directories-to-pull /sdcard   
+   - ./gradlew clean build check assembleDebugAndroidTest
+   - N | gcloud firebase test android run --type instrumentation --results-bucket=gs://staging.expenses-ab252.appspot.com --app app/build/outputs/apk/debug/app-debug.apk --test app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk --device model=sailfish,version=28,locale=en,orientation=portrait --environment-variables coverage=true,coverageFile="/sdcard/coverage.ec" --directories-to-pull /sdcard   
    
 
 before_install:

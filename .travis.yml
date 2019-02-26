@@ -4,7 +4,7 @@ jdk: oraclejdk8
 
 addons:
   sonarcloud:
-    organization: "vladmihai28-github"
+    organization: "sonarcloud"
     token:
       secure: "e12frg2S10i5ZuIj4WAddxQQIjO8PX81iuvk2ZQhH1TYyWW6VnegddOekJPMI9e1r24OgYN6hlA0XiqDRxt5mW60VT+khjPL3BG6V+wVTdyz0tScWzh/QBWl6PjtIjGV4oFvwEEUhXDJ6+TOR8ctmS6td42qeUMc5kyD5Xv9n2CCnnInZd+P6d0Nx+d+MxBm/B4bSNGE03Lh9sEBLxgvrBulajlYFPuiif19k+1ecKro3RUIw4arSzCX+BQMBXdWSA0ZTXQiHIy2W7IbBULFtSLr4JyUHBUohcXaVkbdaU84eHQi4oodmzsv9X6YZFyrmHFseUHssag00h7/sVCBnU57hVUEFbV3E2UWGl8rkeV75V3lw2ohxZPLRL/Gf/mqGZm338AmGFmcoXC3cvJM3d6PjtNZdTzvmEWZmlMNUl+lDhP29SX1MabRObw539RV2KL5jYmHSZTtdr3JYTpfGliPmUwRoKUJ0m36rPDo3WZWcLr+0gAv7bpYwVvV4o1GA+HxAw0fTfDT9ZvSDOIATbs5zZnsKO5k/HA0hAdW5i8Y5qNHhs5CXEhTj2U5RkkhdN7iGb8mLXza39sSB66MCAOGQd1LZHEHd0K5h6zM0iFO0BFltqksifjheTNurEI88J9zKafopANquDzqc/wBfNtU6N4Y8/YVE1gTs7UrVQs="
 

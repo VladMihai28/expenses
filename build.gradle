@@ -20,6 +20,13 @@ plugins {
     id "org.sonarqube" version "2.7"
 }
 
+sonarqube {
+    properties {
+        property "sonar.host.url", "https://sonarcloud.io"
+        property "sonar.projectKey", "VladMihai28_expenses"
+    }
+}
+
 allprojects {
     repositories {
         google()

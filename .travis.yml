@@ -1,6 +1,13 @@
 language: android
 sudo: required
 jdk: oraclejdk8
+
+addons:
+  sonarcloud:
+    organization: "vladmihai28-github"
+    token:
+      secure: "e12frg2S10i5ZuIj4WAddxQQIjO8PX81iuvk2ZQhH1TYyWW6VnegddOekJPMI9e1r24OgYN6hlA0XiqDRxt5mW60VT+khjPL3BG6V+wVTdyz0tScWzh/QBWl6PjtIjGV4oFvwEEUhXDJ6+TOR8ctmS6td42qeUMc5kyD5Xv9n2CCnnInZd+P6d0Nx+d+MxBm/B4bSNGE03Lh9sEBLxgvrBulajlYFPuiif19k+1ecKro3RUIw4arSzCX+BQMBXdWSA0ZTXQiHIy2W7IbBULFtSLr4JyUHBUohcXaVkbdaU84eHQi4oodmzsv9X6YZFyrmHFseUHssag00h7/sVCBnU57hVUEFbV3E2UWGl8rkeV75V3lw2ohxZPLRL/Gf/mqGZm338AmGFmcoXC3cvJM3d6PjtNZdTzvmEWZmlMNUl+lDhP29SX1MabRObw539RV2KL5jYmHSZTtdr3JYTpfGliPmUwRoKUJ0m36rPDo3WZWcLr+0gAv7bpYwVvV4o1GA+HxAw0fTfDT9ZvSDOIATbs5zZnsKO5k/HA0hAdW5i8Y5qNHhs5CXEhTj2U5RkkhdN7iGb8mLXza39sSB66MCAOGQd1LZHEHd0K5h6zM0iFO0BFltqksifjheTNurEI88J9zKafopANquDzqc/wBfNtU6N4Y8/YVE1gTs7UrVQs="
+
 android:
   components:
     - tools # to get the new `repository-11.xml`
@@ -14,6 +21,7 @@ cache:
   - "$HOME/.gradle/caches/"
   - "$HOME/.gradle/wrapper/"
   - "$HOME/google-cloud-sdk/"  
+  - "$HOME/.sonar/cache"
   
 before_script:
   # gcloud
@@ -27,8 +35,14 @@ before_script:
   
 script:
    - ./gradlew clean build check assembleDebugAndroidTest
-   - gcloud firebase test android run --type instrumentation --results-bucket=gs://staging.expenses-ab252.appspot.com --app app/build/outputs/apk/debug/app-debug.apk --test app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk --device model=sailfish,version=28,locale=en,orientation=portrait --environment-variables coverage=true,coverageFile="/sdcard/coverage.ec" --directories-to-pull /sdcard   
-   
+   - gcloud firebase test android run --type instrumentation --results-bucket=gs://staging.expenses-ab252.appspot.com --app app/build/outputs/apk/debug/app-debug.apk --test app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk --device model=sailfish,version=28,locale=en,orientation=portrait --environment-variables coverage=true,coverageFile="/sdcard/coverage.ec" --directories-to-pull /sdcard
+   - gsutil -m cp -r gs://staging.expenses-ab252.appspot.com/**/artifacts/coverage.ec app/build
+
+deploy:
+  provider: script
+  script: gradlew jacocoTestReport sonarqube
+  on:
+    branch: master
 
 before_install:
   - yes | sdkmanager "build-tools;28.0.3"

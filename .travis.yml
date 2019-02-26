@@ -37,12 +37,7 @@ script:
    - ./gradlew clean build check assembleDebugAndroidTest
    - gcloud firebase test android run --type instrumentation --results-bucket=gs://staging.expenses-ab252.appspot.com --app app/build/outputs/apk/debug/app-debug.apk --test app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk --device model=sailfish,version=28,locale=en,orientation=portrait --environment-variables coverage=true,coverageFile="/sdcard/coverage.ec" --directories-to-pull /sdcard
    - gsutil -m cp -r gs://staging.expenses-ab252.appspot.com/**/artifacts/coverage.ec app/build
-
-deploy:
-  provider: script
-  script: gradlew jacocoTestReport sonarqube
-  on:
-    branch: master
+   - if [[ $TRAVIS_BRANCH == 'master' ]]; then ./gradlew jacocoTestReport sonarqube; fi
 
 before_install:
   - yes | sdkmanager "build-tools;28.0.3"

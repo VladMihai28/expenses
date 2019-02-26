@@ -8,8 +8,8 @@ import android.database.sqlite.SQLiteOpenHelper;
  * Created by Vlad
  */
 public class ExpenseDbHelper extends SQLiteOpenHelper {
-    private final static String DATABASE_NAME = "expenses.db";
-    private final static int DATABASE_VERSION = 1;
+    private static final String DATABASE_NAME = "expenses.db";
+    private static final int DATABASE_VERSION = 1;
 
     public ExpenseDbHelper(Context context){
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -33,6 +33,6 @@ public class ExpenseDbHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
-        throw new RuntimeException("onUpgrade not implemented yet");
+        throw new UnsupportedOperationException("onUpgrade not implemented yet");
     }
 }

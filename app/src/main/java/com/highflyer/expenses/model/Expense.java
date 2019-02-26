@@ -38,8 +38,6 @@ public class Expense implements Parcelable {
         private String category;
         private String currency;
 
-        public ExpenseBuilder(){}
-
         public ExpenseBuilder value(float newValue){
             value = newValue;
             return this;

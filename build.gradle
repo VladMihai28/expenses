@@ -24,8 +24,6 @@ sonarqube {
     properties {
         property "sonar.host.url", "https://sonarcloud.io"
         property "sonar.projectKey", "VladMihai28_expenses"
-        property "sonar.organization", "vladmihai28-github"
-        property "sonar.login", "21b3ca612669899955c7acc8ea85dc5e4785bdac"
     }
 }
 

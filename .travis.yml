@@ -1,10 +1,16 @@
-language: java
+language: android
 sudo: required
+jdk: oraclejdk8
 
+android:
+  components:
+    - tools # to get the new `repository-11.xml`
+    - tools # see https://github.com/travis-ci/travis-ci/issues/6040#issuecomment-219367943)
+    - platform-tools
+    - build-tools-27.0.3
+    - android-27
  
 script:
-   - echo "https://console.developers.google.com/storage/browser/staging.expenses-ab252.appspot.com/2019-02-27_20:37:04.848000_fYoq/]" | tee firebaseLog
-   - cat firebaseLog
-   - buildIdentifier="$(awk -F 'staging.expenses-ab252.appspot.com/' '{print $2}' firebaseLog | awk '{print $1}' | cut -d'/' -f1)"
+   - cat testLog
+   - buildIdentifier="$(awk -F 'staging.expenses-ab252.appspot.com/' '{print $2}' testLog | awk '{print $1}' | cut -d'/' -f1)"
    - echo $buildIdentifier
-

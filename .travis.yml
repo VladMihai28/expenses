@@ -2,12 +2,6 @@ language: android
 sudo: required
 jdk: oraclejdk8
 
-addons:
-  sonarcloud:
-    organization: "vladmihai28-github"
-    token:
-      secure: "e12frg2S10i5ZuIj4WAddxQQIjO8PX81iuvk2ZQhH1TYyWW6VnegddOekJPMI9e1r24OgYN6hlA0XiqDRxt5mW60VT+khjPL3BG6V+wVTdyz0tScWzh/QBWl6PjtIjGV4oFvwEEUhXDJ6+TOR8ctmS6td42qeUMc5kyD5Xv9n2CCnnInZd+P6d0Nx+d+MxBm/B4bSNGE03Lh9sEBLxgvrBulajlYFPuiif19k+1ecKro3RUIw4arSzCX+BQMBXdWSA0ZTXQiHIy2W7IbBULFtSLr4JyUHBUohcXaVkbdaU84eHQi4oodmzsv9X6YZFyrmHFseUHssag00h7/sVCBnU57hVUEFbV3E2UWGl8rkeV75V3lw2ohxZPLRL/Gf/mqGZm338AmGFmcoXC3cvJM3d6PjtNZdTzvmEWZmlMNUl+lDhP29SX1MabRObw539RV2KL5jYmHSZTtdr3JYTpfGliPmUwRoKUJ0m36rPDo3WZWcLr+0gAv7bpYwVvV4o1GA+HxAw0fTfDT9ZvSDOIATbs5zZnsKO5k/HA0hAdW5i8Y5qNHhs5CXEhTj2U5RkkhdN7iGb8mLXza39sSB66MCAOGQd1LZHEHd0K5h6zM0iFO0BFltqksifjheTNurEI88J9zKafopANquDzqc/wBfNtU6N4Y8/YVE1gTs7UrVQs="
-
 android:
   components:
     - tools # to get the new `repository-11.xml`
@@ -15,34 +9,10 @@ android:
     - platform-tools
     - build-tools-27.0.3
     - android-27
-
-cache:
-  directories:
-  - "$HOME/.gradle/caches/"
-  - "$HOME/.gradle/wrapper/"
-  - "$HOME/google-cloud-sdk/"  
-  - "$HOME/.sonar/cache"
-  
-before_script:
-  # gcloud
-  - gcloud version || true
-  - if [ ! -d "$HOME/google-cloud-sdk/bin" ]; then rm -rf $HOME/google-cloud-sdk; export CLOUDSDK_CORE_DISABLE_PROMPTS=1; curl https://sdk.cloud.google.com | bash; fi
-  # Add gcloud to $PATH
-  - source /home/travis/google-cloud-sdk/path.bash.inc
-  - gcloud version
-  # Add gcloud auth
-  - gcloud auth activate-service-account firebase-adminsdk-mrzqn@expenses-ab252.iam.gserviceaccount.com --key-file=expenses-ab252-firebase-adminsdk-mrzqn-5aaabfed9d.json --project=expenses-ab252
-  
+ 
 script:
-   - ./gradlew clean build assembleDebugAndroidTest
-   - gcloud firebase test android run --type instrumentation --results-bucket=gs://staging.expenses-ab252.appspot.com --app app/build/outputs/apk/debug/app-debug.apk --test app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk --device model=sailfish,version=28,locale=en,orientation=portrait --environment-variables coverage=true,coverageFile="/sdcard/coverage.ec" --directories-to-pull /sdcard | tee firebaseLog
+   - echo "[https://console.developers.google.com/storage/browser/staging.expenses-ab252.appspot.com/2019-02-27_20:37:04.848000_fYoq/]" | tee firebaseLog
+   - cat firebaseLog
    - buildIdentifier="$(awk -F 'staging.expenses-ab252.appspot.com/' '{print $2}' firebaseLog | awk '{print $1}' | cut -d'/' -f1)"
    - echo $buildIdentifier
-   - gsutil -m cp -r gs://staging.expenses-ab252.appspot.com/$buildIdentifier**/artifacts/coverage.ec app/build
-   - if [[ $TRAVIS_BRANCH == 'master' ]]; then ./gradlew jacocoTestReport sonarqube; fi
 
-before_install:
-  - yes | sdkmanager "build-tools;28.0.3"
-  - chmod +x gradlew
-  - ./gradlew dependencies || true
-  - openssl aes-256-cbc -K $encrypted_4c13fe455862_key -iv $encrypted_4c13fe455862_iv -in expenses-ab252-firebase-adminsdk-mrzqn-5aaabfed9d.json.enc -out expenses-ab252-firebase-adminsdk-mrzqn-5aaabfed9d.json -d  

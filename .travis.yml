@@ -35,7 +35,7 @@ before_script:
   
 script:
    - ./gradlew clean build assembleDebugAndroidTest
-   - gcloud firebase test android run --type instrumentation --results-bucket=gs://staging.expenses-ab252.appspot.com --app app/build/outputs/apk/debug/app-debug.apk --test app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk --device model=sailfish,version=28,locale=en,orientation=portrait --environment-variables coverage=true,coverageFile="/sdcard/coverage.ec" --directories-to-pull /sdcard > firebaseLog
+   - gcloud firebase test android run --type instrumentation --results-bucket=gs://staging.expenses-ab252.appspot.com --app app/build/outputs/apk/debug/app-debug.apk --test app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk --device model=sailfish,version=28,locale=en,orientation=portrait --environment-variables coverage=true,coverageFile="/sdcard/coverage.ec" --directories-to-pull /sdcard 2>&1 | tee firebaseLog
    - cat firebaseLog
    - buildIdentifier="$(awk -F 'staging.expenses-ab252.appspot.com/' '{print $2}' firebaseLog | awk '{print $1}' | cut -d'/' -f1)"
    - echo $buildIdentifier

@@ -34,9 +34,10 @@ before_script:
   - gcloud auth activate-service-account firebase-adminsdk-mrzqn@expenses-ab252.iam.gserviceaccount.com --key-file=expenses-ab252-firebase-adminsdk-mrzqn-5aaabfed9d.json --project=expenses-ab252
   
 script:
-   - ./gradlew clean build check assembleDebugAndroidTest
-   - gcloud firebase test android run --type instrumentation --results-bucket=gs://staging.expenses-ab252.appspot.com --app app/build/outputs/apk/debug/app-debug.apk --test app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk --device model=sailfish,version=28,locale=en,orientation=portrait --environment-variables coverage=true,coverageFile="/sdcard/coverage.ec" --directories-to-pull /sdcard
-   - gsutil -m cp -r gs://staging.expenses-ab252.appspot.com/**/artifacts/coverage.ec app/build
+   - ./gradlew clean build assembleDebugAndroidTest
+   - gcloud firebase test android run --type instrumentation --results-bucket=gs://staging.expenses-ab252.appspot.com --app app/build/outputs/apk/debug/app-debug.apk --test app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk --device model=sailfish,version=28,locale=en,orientation=portrait --environment-variables coverage=true,coverageFile="/sdcard/coverage.ec" --directories-to-pull /sdcard | tee firebaseLog
+   - buildIdentifier="$(cat firebaseLog | grep -Po "staging.expenses-ab252.appspot.com/\K[a-zA-Z0-9./?:=_-]*/")"
+   - gsutil -m cp -r gs://staging.expenses-ab252.appspot.com/buildIdentifier**/artifacts/coverage.ec app/build
    - if [[ $TRAVIS_BRANCH == 'master' ]]; then ./gradlew jacocoTestReport sonarqube; fi
 
 before_install:

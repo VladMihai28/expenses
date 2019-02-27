@@ -26,29 +26,12 @@ task jacocoTestReport(type: JacocoReport) {
     classDirectories = files([debugTree])
 
     executionData = fileTree(dir: project.buildDir, includes: [
-            'jacoco/testDebugUnitTest.exec', '*.ec'
+            'jacoco/testDebugUnitTest.exec', '*.ec', 'outputs/code_coverage/debugAndroidTest/connected/**/*.ec'
     ])
 }
 
-task localJacocoTestReport(type: JacocoReport, dependsOn: ['testDebugUnitTest', 'createDebugCoverageReport']) {
-
-    reports {
-        xml.enabled = true
-        html.enabled = true
-        html.destination = file("$project.buildDir/jacoco")
-        xml.destination = file("$project.buildDir/jacoco/jacoco.xml")
-    }
-
-    def fileFilter = ['**/R.class', '**/R$*.class', '**/BuildConfig.*', '**/Manifest*.*', '**/*Test*.*', 'android/**/*.*']
-    def debugTree = fileTree(dir: "$project.buildDir/intermediates/javac/debug", excludes: fileFilter)
-    def mainSrc = "$project.projectDir/src/main/java"
-
-    sourceDirectories = files([mainSrc])
-    classDirectories = files([debugTree])
-
-    executionData = fileTree(dir: project.buildDir, includes: [
-            'jacoco/testDebugUnitTest.exec', 'outputs/code_coverage/debugAndroidTest/connected/**/*.ec'
-    ])
+task localJacocoTestReport(type: GradleBuild) {
+    tasks = ['testDebugUnitTest', 'createDebugCoverageReport', 'jacocoTestReport']
 }
 
 sonarqube {

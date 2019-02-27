@@ -36,8 +36,8 @@ before_script:
 script:
    - ./gradlew clean build assembleDebugAndroidTest
    - gcloud firebase test android run --type instrumentation --results-bucket=gs://staging.expenses-ab252.appspot.com --app app/build/outputs/apk/debug/app-debug.apk --test app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk --device model=sailfish,version=28,locale=en,orientation=portrait --environment-variables coverage=true,coverageFile="/sdcard/coverage.ec" --directories-to-pull /sdcard | tee firebaseLog
-   - buildIdentifier="$(cat firebaseLog | grep -Po "staging.expenses-ab252.appspot.com/\K[a-zA-Z0-9./?:=_-]*/")"
-   - gsutil -m cp -r gs://staging.expenses-ab252.appspot.com/buildIdentifier**/artifacts/coverage.ec app/build
+   - buildIdentifier="$(awk -F 'staging.expenses-ab252.appspot.com/' '{print $2}' firebaseLog | awk '{print $1}' | cut -d'/' -f1)"
+   - gsutil -m cp -r gs://staging.expenses-ab252.appspot.com/$buildIdentifier**/artifacts/coverage.ec app/build
    - if [[ $TRAVIS_BRANCH == 'master' ]]; then ./gradlew jacocoTestReport sonarqube; fi
 
 before_install:

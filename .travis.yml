@@ -24,7 +24,7 @@ cache:
   - "$HOME/.sonar/cache"
   
 before_script:
-  - chmod +x runSonar.sh
+  - chmod +x runStaticAnalysis.sh
   # gcloud
   - gcloud version || true
   - if [ ! -d "$HOME/google-cloud-sdk/bin" ]; then rm -rf $HOME/google-cloud-sdk; export CLOUDSDK_CORE_DISABLE_PROMPTS=1; curl https://sdk.cloud.google.com | bash; fi
@@ -37,7 +37,7 @@ before_script:
 script:
    - ./gradlew clean build assembleDebugAndroidTest
    - gcloud firebase test android run --type instrumentation --results-bucket=gs://staging.expenses-ab252.appspot.com --app app/build/outputs/apk/debug/app-debug.apk --test app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk --device model=sailfish,version=28,locale=en,orientation=portrait --environment-variables coverage=true,coverageFile="/sdcard/coverage.ec" --directories-to-pull /sdcard 2>&1 | tee firebaseLog
-   - ./runSonar.sh
+   - ./runStaticAnalysis.sh
 
 before_install:
   - yes | sdkmanager "build-tools;28.0.3"

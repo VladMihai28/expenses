@@ -43,4 +43,5 @@ before_install:
   - yes | sdkmanager "build-tools;28.0.3"
   - chmod +x gradlew
   - ./gradlew dependencies || true
+  - wget https://github.com/codacy/codacy-coverage-reporter/releases/download/4.0.5/codacy-coverage-reporter-4.0.5-assembly.jar -o codacy-coverage-reporter-assembly.jar -O codacy-coverage-reporter-assembly.jar
   - openssl aes-256-cbc -K $encrypted_4c13fe455862_key -iv $encrypted_4c13fe455862_iv -in expenses-ab252-firebase-adminsdk-mrzqn-5aaabfed9d.json.enc -out expenses-ab252-firebase-adminsdk-mrzqn-5aaabfed9d.json -d  

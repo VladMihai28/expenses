@@ -5,7 +5,9 @@ if [[ $testSuccess == 'Instrumentation testing complete.' ]]; then
 	buildIdentifier="$(echo -e "${buildIdentifier}" | tr -d '[:space:]')"
 	echo "Found build $buildIdentifier"
 	gsutil -m cp -r gs://staging.expenses-ab252.appspot.com/$buildIdentifier/**/artifacts/coverage.ec app/build
+	./gradlew jacocoTestReport
+	java -jar codacy-coverage-reporter-assembly.jar report -l Java -r app/build/jacoco/jacoco.xml
 	if [[ $TRAVIS_BRANCH == 'master' ]]; then 
-		./gradlew jacocoTestReport sonarqube; 
+		./gradlew sonarqube;
 	fi
 fi

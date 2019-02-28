@@ -7,7 +7,6 @@ if [[ $testSuccess == 'Instrumentation testing complete.' ]]; then
 	gsutil -m cp -r gs://staging.expenses-ab252.appspot.com/$buildIdentifier/**/artifacts/coverage.ec app/build
 	./gradlew jacocoTestReport
 	java -jar codacy-coverage-reporter-assembly.jar report -l Java -r app/build/jacoco/jacoco.xml
-	if [[ $TRAVIS_BRANCH == 'master' ]]; then 
-		./gradlew sonarqube;
-	fi
+	./gradlew sonarqube;
 fi
+

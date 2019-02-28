@@ -2,6 +2,9 @@ language: android
 sudo: required
 jdk: oraclejdk8
 
+env:
+  - secure: "SyQcfryIKXwA2I+UdJiqcCs7hSWQuoC2zngu+A5J9rzJUzZCgtgkhbWk75lNJE57OC38qxWY6FTX3gE6nSYnIw0WMDiuUdx3Lw6Us9wVYoc38OnTrK82HcktdptsPdxjl/ABHG3MlVzAlK//+FRwBtUqH27YPU4DSslkP65gKUOZ6e4AClnJN4BNh+YkJCpGMlAc17bUqtOs2WmDoh4ECDlrCYhca8CGsyU12COj/QuLs1MyHKEwTU3EQrhjCyOwzUCses6OKqDLzDTfOPBeMwKyb6HeHUydA38VGImwuTm9c9TPokgirZBKm8u0cVyCTNrCP6w5QGt40ZoCLwKpZs2bGXIdfkneuJHV8T3Dm4e3YiIwQnT6kFWNK7JQsmHsKoxbXRn7UuA6MlPYE5t0BRyLp9aouO11d4/UbFvZ/d23xr9rTFMnLr55SZ0TumAihreH1DzTvVH029+M0I3mOapMJDS6fdaT/qGFxGJ4JpaqIJBYC5wU0wafNg9j29obOI68esjdix1T3sp1gsMe5UnqXKnRUYvYmQtQhCWtD0wGDYq/mWzwtZsvm+K60hS3UyWIjigdMqkcanaON52V3JjWZsWNGcZ7SJxVDHAMeDz/bR75DwWsq2upWl3p8U0fitALOP7wb454xZ8kIoTDfK2guntTeUqVKzco3IHr9g4="
+
 addons:
   sonarcloud:
     organization: "vladmihai28-github"
@@ -24,7 +27,7 @@ cache:
   - "$HOME/.sonar/cache"
   
 before_script:
-  - chmod +x runSonar.sh
+  - chmod +x runStaticAnalysis.sh
   # gcloud
   - gcloud version || true
   - if [ ! -d "$HOME/google-cloud-sdk/bin" ]; then rm -rf $HOME/google-cloud-sdk; export CLOUDSDK_CORE_DISABLE_PROMPTS=1; curl https://sdk.cloud.google.com | bash; fi
@@ -37,10 +40,11 @@ before_script:
 script:
    - ./gradlew clean build assembleDebugAndroidTest
    - gcloud firebase test android run --type instrumentation --results-bucket=gs://staging.expenses-ab252.appspot.com --app app/build/outputs/apk/debug/app-debug.apk --test app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk --device model=sailfish,version=28,locale=en,orientation=portrait --environment-variables coverage=true,coverageFile="/sdcard/coverage.ec" --directories-to-pull /sdcard 2>&1 | tee firebaseLog
-   - ./runSonar.sh
+   - ./runStaticAnalysis.sh
 
 before_install:
   - yes | sdkmanager "build-tools;28.0.3"
   - chmod +x gradlew
   - ./gradlew dependencies || true
+  - wget https://github.com/codacy/codacy-coverage-reporter/releases/download/4.0.5/codacy-coverage-reporter-4.0.5-assembly.jar -o codacy-coverage-reporter-assembly.jar -O codacy-coverage-reporter-assembly.jar
   - openssl aes-256-cbc -K $encrypted_4c13fe455862_key -iv $encrypted_4c13fe455862_iv -in expenses-ab252-firebase-adminsdk-mrzqn-5aaabfed9d.json.enc -out expenses-ab252-firebase-adminsdk-mrzqn-5aaabfed9d.json -d  

@@ -1,52 +1,46 @@
-language: java
+language: android
 sudo: required
+jdk: oraclejdk8
 
- 
+addons:
+  sonarcloud:
+    organization: "vladmihai28-github"
+    token:
+      secure: "e12frg2S10i5ZuIj4WAddxQQIjO8PX81iuvk2ZQhH1TYyWW6VnegddOekJPMI9e1r24OgYN6hlA0XiqDRxt5mW60VT+khjPL3BG6V+wVTdyz0tScWzh/QBWl6PjtIjGV4oFvwEEUhXDJ6+TOR8ctmS6td42qeUMc5kyD5Xv9n2CCnnInZd+P6d0Nx+d+MxBm/B4bSNGE03Lh9sEBLxgvrBulajlYFPuiif19k+1ecKro3RUIw4arSzCX+BQMBXdWSA0ZTXQiHIy2W7IbBULFtSLr4JyUHBUohcXaVkbdaU84eHQi4oodmzsv9X6YZFyrmHFseUHssag00h7/sVCBnU57hVUEFbV3E2UWGl8rkeV75V3lw2ohxZPLRL/Gf/mqGZm338AmGFmcoXC3cvJM3d6PjtNZdTzvmEWZmlMNUl+lDhP29SX1MabRObw539RV2KL5jYmHSZTtdr3JYTpfGliPmUwRoKUJ0m36rPDo3WZWcLr+0gAv7bpYwVvV4o1GA+HxAw0fTfDT9ZvSDOIATbs5zZnsKO5k/HA0hAdW5i8Y5qNHhs5CXEhTj2U5RkkhdN7iGb8mLXza39sSB66MCAOGQd1LZHEHd0K5h6zM0iFO0BFltqksifjheTNurEI88J9zKafopANquDzqc/wBfNtU6N4Y8/YVE1gTs7UrVQs="
+
+android:
+  components:
+    - tools # to get the new `repository-11.xml`
+    - tools # see https://github.com/travis-ci/travis-ci/issues/6040#issuecomment-219367943)
+    - platform-tools
+    - build-tools-27.0.3
+    - android-27
+
+cache:
+  directories:
+  - "$HOME/.gradle/caches/"
+  - "$HOME/.gradle/wrapper/"
+  - "$HOME/google-cloud-sdk/"  
+  - "$HOME/.sonar/cache"
+  
+before_script:
+  - chmod +x runSonar.sh
+  # gcloud
+  - gcloud version || true
+  - if [ ! -d "$HOME/google-cloud-sdk/bin" ]; then rm -rf $HOME/google-cloud-sdk; export CLOUDSDK_CORE_DISABLE_PROMPTS=1; curl https://sdk.cloud.google.com | bash; fi
+  # Add gcloud to $PATH
+  - source /home/travis/google-cloud-sdk/path.bash.inc
+  - gcloud version
+  # Add gcloud auth
+  - gcloud auth activate-service-account firebase-adminsdk-mrzqn@expenses-ab252.iam.gserviceaccount.com --key-file=expenses-ab252-firebase-adminsdk-mrzqn-5aaabfed9d.json --project=expenses-ab252
+  
 script:
-   - echo "Uploading [app/build/outputs/apk/debug/app-debug.apk] to Firebase Test Lab...
-Uploading [app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk] to Firebase Test Lab...
-Raw results will be stored in your GCS bucket at [https://console.developers.google.com/storage/browser/staging.expenses-ab252.appspot.com/2019-02-27_20:37:04.848000_fYoq/]
+   - ./gradlew clean build assembleDebugAndroidTest
+   - gcloud firebase test android run --type instrumentation --results-bucket=gs://staging.expenses-ab252.appspot.com --app app/build/outputs/apk/debug/app-debug.apk --test app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk --device model=sailfish,version=28,locale=en,orientation=portrait --environment-variables coverage=true,coverageFile="/sdcard/coverage.ec" --directories-to-pull /sdcard 2>&1 | tee firebaseLog
+   - ./runSonar.sh
 
-Test [matrix-2l9y1nesr7xqd] has been created in the Google Cloud.
-Firebase Test Lab will execute your instrumentation test on 1 device(s).
-Creating individual test executions...done.
-
-Test results will be streamed to [https://console.firebase.google.com/project/expenses-ab252/testlab/histories/bh.eb284fc3e1383f6e/matrices/6559344113928123069].
-20:37:15 Test is Pending
-20:37:22 Starting attempt 1.
-20:37:22 Test is Running
-20:37:28 Started logcat recording.
-20:37:28 Preparing device.
-20:38:09 Logging in to Google account on device.
-20:38:09 Installing apps.
-20:38:15 Retrieving Pre-Test Package Stats information from the device.
-20:38:15 Retrieving Performance Environment information from the device.
-20:38:15 Started crash detection.
-20:38:15 Started crash monitoring.
-20:38:15 Started performance monitoring.
-20:38:22 Started video recording.
-20:38:22 Starting instrumentation test.
-20:38:22 Completed instrumentation test.
-20:38:22 Stopped video recording.
-20:38:35 Stopped performance monitoring.
-20:38:35 Stopped crash monitoring.
-20:38:35 Stopped logcat recording.
-20:38:35 Retrieving Post-test Package Stats information from the device.
-20:38:42 Logging out of Google account on device.
-20:38:42 Done. Test time = 5 (secs)
-20:38:42 Starting results processing. Attempt: 1
-20:38:48 Completed results processing. Time taken = 7 (secs)
-20:38:48 Test is Finished
-
-Instrumentation testing complete.
-
-More details are available at [https://console.firebase.google.com/project/expenses-ab252/testlab/histories/bh.eb284fc3e1383f6e/matrices/6559344113928123069].
-┌─────────┬─────────────────────────┬─────────────────────┐
-│ OUTCOME │     TEST_AXIS_VALUE     │     TEST_DETAILS    │
-├─────────┼─────────────────────────┼─────────────────────┤
-│ Passed  │ sailfish-28-en-portrait │ 3 test cases passed │
-└─────────┴─────────────────────────┴─────────────────────┘" | tee firebaseLog
-   - cat firebaseLog
-   - buildIdentifier="$(awk -F 'staging.expenses-ab252.appspot.com/' '{print $2}' firebaseLog | awk '{print $1}' | cut -d'/' -f1)"
-   - echo $buildIdentifier
-
+before_install:
+  - yes | sdkmanager "build-tools;28.0.3"
+  - chmod +x gradlew
+  - ./gradlew dependencies || true
+  - openssl aes-256-cbc -K $encrypted_4c13fe455862_key -iv $encrypted_4c13fe455862_iv -in expenses-ab252-firebase-adminsdk-mrzqn-5aaabfed9d.json.enc -out expenses-ab252-firebase-adminsdk-mrzqn-5aaabfed9d.json -d  

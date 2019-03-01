@@ -18,17 +18,12 @@ import static androidx.test.espresso.matcher.ViewMatchers.withId;
 @LargeTest
 public class ButtonTest {
 
-    public ButtonTest()
-    {
-        super();
-    }
-
     @Rule
     public ActivityTestRule<MainActivity> mActivityRule =
             new ActivityTestRule<>(MainActivity.class);
 
     @Test
-    public void test_listGoesOverTheFold() {
+    public void clickOnButton() {
         onView(withId(R.id.addExpenseButton))
                 .perform(click())
                 .check(matches(isDisplayed()));

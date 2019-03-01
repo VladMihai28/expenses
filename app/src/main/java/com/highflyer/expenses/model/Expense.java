@@ -7,7 +7,7 @@ import android.os.Parcelable;
  * Created by Vlad
  */
 
-public class Expense implements Parcelable {
+public class Expense {
 
     private float value;
     private int date;
@@ -16,13 +16,6 @@ public class Expense implements Parcelable {
 
     
     public Expense(){}
-
-    public Expense(Parcel parcel){
-        this.value = parcel.readFloat();
-        this.date = parcel.readInt();
-        this.category = parcel.readString();
-        this.currency = parcel.readString();
-    }
 
     public Expense(ExpenseBuilder builder){
         value = builder.value;
@@ -92,29 +85,4 @@ public class Expense implements Parcelable {
         this.currency = currency;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeFloat(value);
-        parcel.writeInt(date);
-        parcel.writeString(category);
-        parcel.writeString(currency);
-    }
-
-    public static final Parcelable.Creator<Expense> CREATOR = new Parcelable.Creator<Expense>() {
-
-        @Override
-        public Expense createFromParcel(Parcel parcel) {
-            return new Expense(parcel);
-        }
-
-        @Override
-        public Expense[] newArray(int size) {
-            return new Expense[size];
-        }
-    };
 }
